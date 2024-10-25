@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Teamsel from './inputcomp/Teamsel';
 import Oversel from './inputcomp/Oversel';
 import Score from './inputcomp/Score';
@@ -10,6 +10,7 @@ function Input() {
     const scorechange=(event)=>{
         setscore(event.target.value)
     }
+  const [logo,setlogo]=useState(null)
   const [value, setValue] = useState('');
   const handleChange = (event) => {
       let inputValue = parseFloat(event.target.value);
@@ -28,6 +29,33 @@ function Input() {
           setValue(inputValue.toString());
         }
     };
+        const fetchlogo = async (tn)=>{
+          try{
+            const response = await fetch('http://localhost:3000/api/logo/findlogo',{
+              method:"POST",
+              headers:{
+                'Content-Type':'application/json',
+              },
+              body: JSON.stringify({
+                teamname:tn
+              })
+          })
+          const data = await response.json()
+          if(response.ok){
+            setlogo(data)
+            console.log(data)
+          }
+          else{
+            console.log("an error occured")
+          }
+          }
+          catch(err){
+            console.log(err)
+          }
+          
+        }
+      
+
 
   const inning=['batting','bowling'];
   const teams = [
@@ -64,6 +92,7 @@ const[submitted,setsubmitted]=useState(false)
 const[apiresponse,setapiresponse]=useState(null)
 const handlesubmit=async (e)=>{
   e.preventDefault();
+  await fetchlogo(selectedteams.batting)
   const arr=[transform[selectedteams.batting],transform[selectedteams.bowling],Math.floor(value),value-Math.floor(value),stadiumTeamMap[venue],score]
   const final ={
     input:arr
@@ -94,13 +123,15 @@ const handlereset= ()=>{
   setvenue(" ")
   setscore(" ")
   setValue(' ')
+  setlogo(null)
 }
   return (
-      <div>
+      <div className='inp'>
       <h1> Ipl match prediction using deep learning</h1>
      {submitted?(
       <div>
         <h1> Winner is {JSON.parse(JSON.stringify(apiresponse)).prediction}</h1>
+        { logo && <img src={logo.avatar} alt='batting team'></img>}
         <button onClick={handlereset}> click to go back</button>
       </div>
      ):(
@@ -111,13 +142,12 @@ const handlereset= ()=>{
      <Oversel value={value} handleChange={handleChange}/> 
      <Score score={score} scorechange={scorechange}/>
      <Venue handleVenuechange={handleVenuechange} venue={venue} venues={stadiums}/>
-     <button type="submit">Submit</button>
+     <button type="submit" className='btn btn-warning'>Submit</button>
      <button type="reset" onClick={handlereset}> Reset</button>
     </form>
     </div>)
     }
     </div>
-    
   )
 }
 

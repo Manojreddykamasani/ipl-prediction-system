@@ -1,6 +1,6 @@
 from flask import Flask,request,jsonify
 from tensorflow.keras.models import load_model
-from flask_cors import CORS
+from flask_cors import CORS 
 import numpy as np
 app = Flask(__name__)
 CORS(app)
@@ -9,11 +9,12 @@ model = load_model('./lstm.h5')
 def predict():
     data=request.get_json()
     data=data['input']
-    data[5]=int(data[5])
-    data[3]=data[3]*10
-    print(data)
     if not data:
         return jsonify({"error":"no input data"})
+    data[5]=int(data[5])
+    if(data[4]!=data[0] and data[4]!=data[1]):
+        data[4]=-1
+    data[3]=data[3]*10
     input_data= np.array(data,dtype=np.float32)
     input_data=np.reshape(input_data,(1,1,6))
     prediction= model.predict(input_data)

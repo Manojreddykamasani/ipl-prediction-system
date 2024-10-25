@@ -1,0 +1,10 @@
+.inp{
+    height:800px;
+    width: 600px;
+    border: 2px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    justify-content: space-between;
+    justify-items: 80px;
+}
