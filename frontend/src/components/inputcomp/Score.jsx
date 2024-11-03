@@ -1,10 +1,10 @@
 import React,{useState} from 'react'
-function Score({scorechange,score}) {
+function Score({scorechange,score,type}) {
     
   return (
 
     <div>
-      <label>Enter first innings Score:   </label>
+      <label>Enter  {type} Score:   </label>
       <input type="number" onChange={scorechange} value={score} step='5'/>
     </div>
   )

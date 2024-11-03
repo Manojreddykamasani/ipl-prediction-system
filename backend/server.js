@@ -20,8 +20,9 @@ app.use(cors({
     origin: 'http://localhost:5173', 
     methods: ['GET', 'POST'], 
   }));
+  app.use('/logos', express.static('logos'));
+  app.use('/api/logo',logorouter)
 app.listen(PORT,()=>{
     console.log("server is running on the port")
 })
-app.use('/api/logo',logorouter)
 

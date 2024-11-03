@@ -6,11 +6,14 @@ import Venue from './inputcomp/Venue';
 function Input() {
   const transform = {'Chennai Super Kings': 1,'Delhi Capitals': 2,'Kolkata Knight Riders': 3,'Mumbai Indians': 4,'Punjab Kings': 5,'Rajasthan Royals': 6,'Royal Challengers Bangalore': 7,'Sunrisers Hyderabad': 8,'Lucknow Super Giants': 9,'Gujarat Titans': 10}
   const stadiumTeamMap = { "Wankhede Stadium": 4, "MA Chidambaram Stadium": 1, "M. Chinnaswamy Stadium": 7, "Arun Jaitley Stadium": 2, "Eden Gardens": 3, "Rajiv Gandhi International Cricket Stadium": 8, "Sawai Mansingh Stadium": 6, "Punjab Cricket Association IS Bindra Stadium": 5, "Narendra Modi Stadium": 10, "Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium": 9, "Others": -1 };
-  const [score,setscore]=useState(0)
+  const [score,setscore]=useState(0)  
+  const [currscore,setcurrscore]=useState(0)
     const scorechange=(event)=>{
         setscore(event.target.value)
     }
-  const [logo,setlogo]=useState(null)
+  const [batlogo,setbatlogo]=useState(null)
+  const [bowlogo,setbowlogo]=useState(null)
+  const [winlogo,setwinlogo]=useState(null)
   const [value, setValue] = useState('');
   const handleChange = (event) => {
       let inputValue = parseFloat(event.target.value);
@@ -29,7 +32,7 @@ function Input() {
           setValue(inputValue.toString());
         }
     };
-        const fetchlogo = async (tn)=>{
+        const fetchlogo = async (tn,setlogo)=>{
           try{
             const response = await fetch('http://localhost:3000/api/logo/findlogo',{
               method:"POST",
@@ -42,7 +45,7 @@ function Input() {
           })
           const data = await response.json()
           if(response.ok){
-            setlogo(data)
+            setlogo(data.avatarUrl)
             console.log(data)
           }
           else{
@@ -90,10 +93,11 @@ const handleTeamChange = (inningType, team) => {
 const[venue,setvenue]= useState(' ')
 const[submitted,setsubmitted]=useState(false)
 const[apiresponse,setapiresponse]=useState(null)
-const handlesubmit=async (e)=>{
+const handlesubmit= async (e)=>{
   e.preventDefault();
-  await fetchlogo(selectedteams.batting)
-  const arr=[transform[selectedteams.batting],transform[selectedteams.bowling],Math.floor(value),value-Math.floor(value),stadiumTeamMap[venue],score]
+  await fetchlogo(selectedteams.batting,setbatlogo)
+  await fetchlogo(selectedteams.bowling,setbowlogo)
+  const arr=[transform[selectedteams.batting],transform[selectedteams.bowling],Math.floor(value),value-Math.floor(value),currscore,stadiumTeamMap[venue],score]
   const final ={
     input:arr
   }
@@ -112,6 +116,15 @@ const handlesubmit=async (e)=>{
   catch(error){
     console.error('Error',error)
   }
+
+}
+useEffect(() => {
+  if (apiresponse && apiresponse.prediction) {
+    fetchlogo(apiresponse.prediction, setwinlogo);
+  }
+}, [apiresponse]);
+const currscorechange=(e)=>{
+ setcurrscore(e.target.value)
 }
 const handleVenuechange= (venue)=>{
   setvenue(venue)
@@ -127,11 +140,19 @@ const handlereset= ()=>{
 }
   return (
       <div className='inp'>
-      <h1> Ipl match prediction using deep learning</h1>
+      <h1> Ipl match prediction System</h1>
      {submitted?(
-      <div>
+      <div className='outdisplay'>
         <h1> Winner is {JSON.parse(JSON.stringify(apiresponse)).prediction}</h1>
-        { logo && <img src={logo.avatar} alt='batting team'></img>}
+        <div className='logos'>
+          <div className='all'>
+        { batlogo && <img src={batlogo} alt='batting team' id='log'></img>}
+        { bowlogo && <img src={bowlogo} alt='bowling team' id='log'></img>}
+        </div>
+        <div className='win'>
+        { winlogo && <img src={winlogo} alt='winning team' id='log'></img>}
+        </div>
+        </div>
         <button onClick={handlereset}> click to go back</button>
       </div>
      ):(
@@ -140,7 +161,8 @@ const handlereset= ()=>{
     <Teamsel inning={inning[0]} teams={teams} handleTeamChange={handleTeamChange} selectedteam={selectedteams.batting} excludeteam={selectedteams.bowling}/>
     <Teamsel inning={inning[1]} teams={teams} handleTeamChange={handleTeamChange} selectedteam={selectedteams.bowling} excludeteam={selectedteams.batting}/>
      <Oversel value={value} handleChange={handleChange}/> 
-     <Score score={score} scorechange={scorechange}/>
+     <Score score={score} scorechange={scorechange} type="first inning"/>
+     <Score score={currscore} scorechange={currscorechange} type="current"/>
      <Venue handleVenuechange={handleVenuechange} venue={venue} venues={stadiums}/>
      <button type="submit" className='btn btn-warning'>Submit</button>
      <button type="reset" onClick={handlereset}> Reset</button>

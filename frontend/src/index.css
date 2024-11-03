@@ -11,7 +11,26 @@ body {
     align-items: center;
     height: 100vh;
 }
-
+.logos{
+    display: flex;
+    flex-direction: column;
+}
+.all{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.win{
+    margin-left: 160px;
+}
+#log{
+ height: 100px;
+ width: 100px;
+ background-color: transparent;
+ border: none;
+ box-shadow: none;
+ background: none;
+}
 h1 {
     text-align: center;
     color: #ffffff;
