@@ -6,7 +6,7 @@ from flask_cors import CORS
 import numpy as np
 app = Flask(__name__)
 CORS(app)
-model = load_model('./finalised.h5')
+model = load_model('./f1.h5')
 scaler= jb.load("scaler.pkl")
 @app.route('/predict',methods=['POST'])
 def predict():
@@ -14,8 +14,6 @@ def predict():
     data=data['input']
     if not data:
         return jsonify({"error":"no input data"})
-    if(data[5]!=data[0] and data[5]!=data[1]):
-        data[5]=-1
     data[3]=data[3]*10
     data=scaler.transform([data])
     input_data= np.array(data,dtype=np.float32)
@@ -32,7 +30,7 @@ def predict():
     7: 'Royal Challengers Bangalore',
     8: 'Sunrisers Hyderabad',
     9: 'Lucknow Super Giants',
-    10: 'Gujarat Titans'
+    0: 'Gujarat Titans'
 }
     return jsonify({'prediction':inv[prediction]})
 if __name__=='__main__':

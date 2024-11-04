@@ -4,8 +4,8 @@ import Oversel from './inputcomp/Oversel';
 import Score from './inputcomp/Score';
 import Venue from './inputcomp/Venue';
 function Input() {
-  const transform = {'Chennai Super Kings': 1,'Delhi Capitals': 2,'Kolkata Knight Riders': 3,'Mumbai Indians': 4,'Punjab Kings': 5,'Rajasthan Royals': 6,'Royal Challengers Bangalore': 7,'Sunrisers Hyderabad': 8,'Lucknow Super Giants': 9,'Gujarat Titans': 10}
-  const stadiumTeamMap = { "Wankhede Stadium": 4, "MA Chidambaram Stadium": 1, "M. Chinnaswamy Stadium": 7, "Arun Jaitley Stadium": 2, "Eden Gardens": 3, "Rajiv Gandhi International Cricket Stadium": 8, "Sawai Mansingh Stadium": 6, "Punjab Cricket Association IS Bindra Stadium": 5, "Narendra Modi Stadium": 10, "Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium": 9, "Others": -1 };
+  const transform = {'Chennai Super Kings': 1,'Delhi Capitals': 2,'Kolkata Knight Riders': 3,'Mumbai Indians': 4,'Punjab Kings': 5,'Rajasthan Royals': 6,'Royal Challengers Bangalore': 7,'Sunrisers Hyderabad': 8,'Lucknow Super Giants': 9,'Gujarat Titans': 0}
+  const stadiumTeamMap = { "Wankhede Stadium": 4, "MA Chidambaram Stadium": 1, "M. Chinnaswamy Stadium": 7, "Arun Jaitley Stadium": 2, "Eden Gardens": 3, "Rajiv Gandhi International Cricket Stadium": 8, "Sawai Mansingh Stadium": 6, "Punjab Cricket Association IS Bindra Stadium": 5, "Narendra Modi Stadium": 0, "Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium": 9, "Others": -1 };
   const [score,setscore]=useState(0)  
   const [currscore,setcurrscore]=useState(0)
     const scorechange=(event)=>{
